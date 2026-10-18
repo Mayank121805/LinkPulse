@@ -27,12 +27,12 @@
 
       <div class="nav-actions">
         {% if is_logged_in %}
-          <a href="/dashboard" class="btn btn-primary btn-sm">
-            <i data-lucide="layout-dashboard" style="width: 14px; height: 14px;"></i> Open Dashboard
-          </a>
+        <a href="/dashboard" class="btn btn-primary btn-sm">
+          <i data-lucide="layout-dashboard" style="width: 14px; height: 14px;"></i> Open Dashboard
+        </a>
         {% else %}
-          <a href="/auth/login" class="btn btn-outline btn-sm">Sign In</a>
-          <a href="/auth/register" class="btn btn-primary btn-sm">Get Started</a>
+        <a href="/auth/login" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="/auth/register" class="btn btn-primary btn-sm">Get Started</a>
         {% endif %}
       </div>
     </div>
@@ -53,7 +53,8 @@
     </h1>
 
     <p class="hero-subtitle">
-      Deploy custom short links, enforce click limits and password gates, generate high-resolution QR codes, and extract deep real-time analytics with zero fluff.
+      Deploy custom short links, enforce click limits and password gates, generate high-resolution QR codes, and extract
+      deep real-time analytics with zero fluff.
     </p>
 
     <!-- Instant Shortener Widget -->
@@ -61,13 +62,8 @@
       <form id="landingShortenForm">
         <div class="shortener-form-row">
           <div style="flex: 1;">
-            <input 
-              type="url" 
-              id="landingUrlInput" 
-              class="form-control" 
-              placeholder="Paste your long destination URL (e.g. https://yourcompany.com/product-launch)" 
-              required
-            >
+            <input type="url" id="landingUrlInput" class="form-control"
+              placeholder="Paste your long destination URL (e.g. https://yourcompany.com/product-launch)" required>
           </div>
           <button type="submit" class="btn btn-primary">
             <i data-lucide="zap" style="width: 16px; height: 16px;"></i> Shorten URL
@@ -105,34 +101,45 @@
       </div>
       <div class="mockup-body">
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem;">
-          <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left;">
+          <div
+            style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left;">
             <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Total Platform Clicks</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">{{ total_clicks or '387' }}</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">{{
+              total_clicks or '387' }}</div>
             <div style="font-size: 0.6875rem; color: #059669; font-weight: 600;">+24% from last week</div>
           </div>
-          <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left;">
+          <div
+            style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left;">
             <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Active Links</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">{{ total_links or '7' }}</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">{{
+              total_links or '7' }}</div>
             <div style="font-size: 0.6875rem; color: #2563EB; font-weight: 600;">100% operational</div>
           </div>
-          <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left;">
+          <div
+            style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left;">
             <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Avg. Redirection Latency</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">14ms</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">14ms
+            </div>
             <div style="font-size: 0.6875rem; color: #059669; font-weight: 600;">Sub-millisecond DB route</div>
           </div>
-          <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left;">
+          <div
+            style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left;">
             <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Bot Traffic Blocked</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">12.4%</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">12.4%
+            </div>
             <div style="font-size: 0.6875rem; color: #64748B; font-weight: 600;">Filtered from analytics</div>
           </div>
         </div>
 
-        <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; text-align: left;">
+        <div
+          style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; text-align: left;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-primary);">Click Volume & Conversions (Last 14 Days)</span>
+            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-primary);">Click Volume & Conversions
+              (Last 14 Days)</span>
             <span style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">Live MySQL Stream</span>
           </div>
-          <div style="height: 140px; width: 100%; display: flex; align-items: flex-end; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">
+          <div
+            style="height: 140px; width: 100%; display: flex; align-items: flex-end; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">
             <div style="flex:1; height: 35%; background: rgba(37,99,235,0.2); border-radius: 4px;"></div>
             <div style="flex:1; height: 48%; background: rgba(37,99,235,0.3); border-radius: 4px;"></div>
             <div style="flex:1; height: 60%; background: rgba(37,99,235,0.4); border-radius: 4px;"></div>
@@ -167,7 +174,8 @@
           <i data-lucide="sliders" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Granular Redirection Rules</h3>
-        <p>Set precise expiration dates, click volume caps, or restrict access with cryptographic passwords before redirecting visitors.</p>
+        <p>Set precise expiration dates, click volume caps, or restrict access with cryptographic passwords before
+          redirecting visitors.</p>
       </div>
 
       <div class="feature-card">
@@ -175,7 +183,8 @@
           <i data-lucide="bar-chart-3" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Real Database Analytics</h3>
-        <p>Every click event records timestamp, referrer domain, browser family, OS, and device category with zero mocked statistics.</p>
+        <p>Every click event records timestamp, referrer domain, browser family, OS, and device category with zero
+          mocked statistics.</p>
       </div>
 
       <div class="feature-card">
@@ -183,7 +192,8 @@
           <i data-lucide="bot" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Automated Bot Filtering</h3>
-        <p>Smart user-agent classifiers isolate crawlers, scrapers, and automated bots so your marketing metrics reflect real human interactions.</p>
+        <p>Smart user-agent classifiers isolate crawlers, scrapers, and automated bots so your marketing metrics reflect
+          real human interactions.</p>
       </div>
 
       <div class="feature-card">
@@ -191,7 +201,8 @@
           <i data-lucide="qr-code" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>High-Res QR Code Studio</h3>
-        <p>Generate production-ready QR codes dynamically for any short URL, with PNG asset downloads and live scan verification.</p>
+        <p>Generate production-ready QR codes dynamically for any short URL, with PNG asset downloads and live scan
+          verification.</p>
       </div>
 
       <div class="feature-card">
@@ -199,7 +210,8 @@
           <i data-lucide="file-spreadsheet" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Bulk CSV Ingestion</h3>
-        <p>Import hundreds of links in seconds with row-level validation reports that catch invalid URLs, format issues, and duplicate aliases.</p>
+        <p>Import hundreds of links in seconds with row-level validation reports that catch invalid URLs, format issues,
+          and duplicate aliases.</p>
       </div>
 
       <div class="feature-card">
@@ -207,7 +219,8 @@
           <i data-lucide="shield-alert" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Enterprise Governance</h3>
-        <p>Centralized domain blocklists, real-time link takedown controls, and immutable administrative audit logs keep your ecosystem clean.</p>
+        <p>Centralized domain blocklists, real-time link takedown controls, and immutable administrative audit logs keep
+          your ecosystem clean.</p>
       </div>
     </div>
   </div>
@@ -220,7 +233,8 @@
       <div class="section-badge">Real-Time Intelligence</div>
       <h2 class="section-title">Deep Telemetry on Every Click</h2>
       <p class="section-desc">
-        Gain actionable insights from every interaction with atomic MySQL event capture, device classification, and automated crawler isolation.
+        Gain actionable insights from every interaction with atomic MySQL event capture, device classification, and
+        automated crawler isolation.
       </p>
     </div>
 
@@ -233,7 +247,8 @@
           </div>
           <div>
             <h4>Automated Bot Isolation</h4>
-            <p>Smart user-agent classifiers identify scrapers, crawlers, and search indexing bots, preventing skewed marketing metrics.</p>
+            <p>Smart user-agent classifiers identify scrapers, crawlers, and search indexing bots, preventing skewed
+              marketing metrics.</p>
           </div>
         </div>
 
@@ -243,7 +258,8 @@
           </div>
           <div>
             <h4>Device & OS Fingerprinting</h4>
-            <p>Real-time categorization across Mobile, Desktop, and Tablet platforms with operating system telemetry (iOS, Android, Windows, macOS).</p>
+            <p>Real-time categorization across Mobile, Desktop, and Tablet platforms with operating system telemetry
+              (iOS, Android, Windows, macOS).</p>
           </div>
         </div>
 
@@ -253,7 +269,8 @@
           </div>
           <div>
             <h4>Geographic & Referrer Mapping</h4>
-            <p>Pinpoint traffic origin domains (Direct, Google, LinkedIn, X/Twitter) alongside geographic country codes.</p>
+            <p>Pinpoint traffic origin domains (Direct, Google, LinkedIn, X/Twitter) alongside geographic country codes.
+            </p>
           </div>
         </div>
       </div>
@@ -263,7 +280,8 @@
         <div class="analytics-card-header">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             <span class="status-pulse-dot"></span>
-            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-primary);">Live Telemetry Stream</span>
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-primary);">Live Telemetry
+              Stream</span>
           </div>
           <span class="badge badge-success" style="font-size: 0.75rem;">Connected to MySQL</span>
         </div>
@@ -284,14 +302,17 @@
         </div>
 
         <div style="margin-top: 1.5rem;">
-          <div style="font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.75rem;">Device Distribution</div>
-          
+          <div style="font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            Device Distribution</div>
+
           <div class="progress-item">
             <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.25rem;">
               <span>Mobile (iOS / Android)</span>
               <strong>64%</strong>
             </div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 64%; background: var(--brand-gradient);"></div></div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 64%; background: var(--brand-gradient);"></div>
+            </div>
           </div>
 
           <div class="progress-item" style="margin-top: 0.75rem;">
@@ -299,7 +320,9 @@
               <span>Desktop (Windows / macOS / Linux)</span>
               <strong>32%</strong>
             </div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 32%; background: var(--secondary);"></div></div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 32%; background: var(--secondary);"></div>
+            </div>
           </div>
 
           <div class="progress-item" style="margin-top: 0.75rem;">
@@ -307,11 +330,14 @@
               <span>Tablet / Others</span>
               <strong>4%</strong>
             </div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 4%; background: #94A3B8;"></div></div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 4%; background: #94A3B8;"></div>
+            </div>
           </div>
         </div>
 
-        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+        <div
+          style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
           <span style="font-size: 0.8125rem; color: var(--text-muted);">Real database aggregation</span>
           <a href="/auth/login" class="btn btn-primary btn-sm">View In Dashboard →</a>
         </div>
@@ -327,7 +353,8 @@
       <div class="section-badge">Enterprise Protection</div>
       <h2 class="section-title">Zero-Trust Link Governance</h2>
       <p class="section-desc">
-        Enforce strict redirection compliance, gate sensitive resources behind passwords, and eliminate malicious destination abuse.
+        Enforce strict redirection compliance, gate sensitive resources behind passwords, and eliminate malicious
+        destination abuse.
       </p>
     </div>
 
@@ -337,7 +364,8 @@
           <i data-lucide="lock" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Cryptographic Password Gates</h3>
-        <p>Protect confidential presentations, staging builds, and documents with password verification before visitors reach the destination URL.</p>
+        <p>Protect confidential presentations, staging builds, and documents with password verification before visitors
+          reach the destination URL.</p>
       </div>
 
       <div class="security-card">
@@ -345,7 +373,8 @@
           <i data-lucide="timer-off" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Atomic Expiration & Limits</h3>
-        <p>Set automated link expiration dates or volume caps (e.g. max 500 clicks). Once reached, the gateway immediately returns HTTP 410 Gone.</p>
+        <p>Set automated link expiration dates or volume caps (e.g. max 500 clicks). Once reached, the gateway
+          immediately returns HTTP 410 Gone.</p>
       </div>
 
       <div class="security-card">
@@ -353,7 +382,8 @@
           <i data-lucide="shield-alert" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Active Domain Blocklists</h3>
-        <p>Proactively prevents malicious URLs, phishing destinations, and fraudulent targets at link-creation time with centralized domain blacklisting.</p>
+        <p>Proactively prevents malicious URLs, phishing destinations, and fraudulent targets at link-creation time with
+          centralized domain blacklisting.</p>
       </div>
 
       <div class="security-card">
@@ -361,7 +391,8 @@
           <i data-lucide="file-check-2" style="width: 24px; height: 24px;"></i>
         </div>
         <h3>Immutable Admin Audit Logs</h3>
-        <p>Every administrative action, domain ban, user status toggle, and emergency link takedown is permanently journaled with timestamps and admin IDs.</p>
+        <p>Every administrative action, domain ban, user status toggle, and emergency link takedown is permanently
+          journaled with timestamps and admin IDs.</p>
       </div>
     </div>
   </div>
@@ -374,7 +405,8 @@
       <div class="section-badge">Infrastructure Health</div>
       <h2 class="section-title">Transparent System Status</h2>
       <p class="section-desc">
-        LinkPulse services are actively monitored in real time. Redirection gateways, databases, and QR services maintain continuous uptime.
+        LinkPulse services are actively monitored in real time. Redirection gateways, databases, and QR services
+        maintain continuous uptime.
       </p>
     </div>
 
@@ -384,7 +416,8 @@
           <span class="status-pulse-dot big"></span>
           <div>
             <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);">All Systems Operational</div>
-            <div style="font-size: 0.8125rem; color: var(--text-muted);">99.98% Historical Uptime across all endpoints</div>
+            <div style="font-size: 0.8125rem; color: var(--text-muted);">99.98% Historical Uptime across all endpoints
+            </div>
           </div>
         </div>
         <button id="checkHealthBtn" class="btn btn-secondary btn-sm" onclick="fetchLiveStatus()">
@@ -438,7 +471,8 @@
         </div>
       </div>
 
-      <div id="liveHealthOutput" style="margin-top: 1.5rem; padding: 1rem; background-color: var(--bg-main); border-radius: var(--radius-md); font-family: monospace; font-size: 0.8125rem; color: var(--text-secondary); display: none;">
+      <div id="liveHealthOutput"
+        style="margin-top: 1.5rem; padding: 1rem; background-color: var(--bg-main); border-radius: var(--radius-md); font-family: monospace; font-size: 0.8125rem; color: var(--text-secondary); display: none;">
       </div>
     </div>
   </div>
@@ -456,7 +490,8 @@
           <div class="brand-name">Link<span>Pulse</span></div>
         </div>
         <p style="color: #64748B; font-size: 0.8125rem;">
-          Production-grade URL shortener and real-time analytics platform built for competitive high-volume environments.
+          Production-grade URL shortener and real-time analytics platform built for competitive high-volume
+          environments.
         </p>
       </div>
 
@@ -473,7 +508,6 @@
         <div>
           <div style="color: #FFFFFF; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.75rem;">System</div>
           <ul style="list-style: none; font-size: 0.8125rem; display: flex; flex-direction: column; gap: 0.5rem;">
-            <li><a href="/health" target="_blank" style="color: #94A3B8;">Health API</a></li>
             <li><a href="/auth/login" style="color: #94A3B8;">Sign In</a></li>
             <li><a href="/auth/register" style="color: #94A3B8;">Register</a></li>
           </ul>
@@ -484,7 +518,8 @@
     <div class="footer-bottom">
       <div>© 2026 LinkPulse Platform. Built for Hackathon Round 2.</div>
       <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #10B981; display: inline-block;"></span>
+        <span
+          style="width: 8px; height: 8px; border-radius: 50%; background-color: #10B981; display: inline-block;"></span>
         <span style="color: #94A3B8;">All Systems Operational</span>
       </div>
     </div>
@@ -492,34 +527,34 @@
 </footer>
 
 <script>
-async function fetchLiveStatus() {
-  const btn = document.getElementById('checkHealthBtn');
-  const out = document.getElementById('liveHealthOutput');
-  const dbBadge = document.getElementById('dbStatusBadge');
-  if (btn) btn.disabled = true;
-  const start = performance.now();
-  try {
-    const res = await fetch('/health');
-    const latency = Math.round(performance.now() - start);
-    const data = await res.json();
-    if (out) {
-      out.style.display = 'block';
-      out.innerHTML = `<strong>Live Health Response (${latency}ms latency):</strong><br>` +
-        JSON.stringify({ ...data, ping_latency: `${latency}ms` }, null, 2)
-          .replace(/\n/g, '<br>')
-          .replace(/ /g, '&nbsp;');
+  async function fetchLiveStatus() {
+    const btn = document.getElementById('checkHealthBtn');
+    const out = document.getElementById('liveHealthOutput');
+    const dbBadge = document.getElementById('dbStatusBadge');
+    if (btn) btn.disabled = true;
+    const start = performance.now();
+    try {
+      const res = await fetch('/health');
+      const latency = Math.round(performance.now() - start);
+      const data = await res.json();
+      if (out) {
+        out.style.display = 'block';
+        out.innerHTML = `<strong>Live Health Response (${latency}ms latency):</strong><br>` +
+          JSON.stringify({ ...data, ping_latency: `${latency}ms` }, null, 2)
+            .replace(/\n/g, '<br>')
+            .replace(/ /g, '&nbsp;');
+      }
+      if (dbBadge && data.database === 'healthy') {
+        dbBadge.textContent = `Healthy • ${latency}ms`;
+      }
+    } catch (err) {
+      if (out) {
+        out.style.display = 'block';
+        out.innerHTML = `<span style="color: var(--danger);">Failed to query health API: ${err.message}</span>`;
+      }
+    } finally {
+      if (btn) btn.disabled = false;
     }
-    if (dbBadge && data.database === 'healthy') {
-      dbBadge.textContent = `Healthy • ${latency}ms`;
-    }
-  } catch (err) {
-    if (out) {
-      out.style.display = 'block';
-      out.innerHTML = `<span style="color: var(--danger);">Failed to query health API: ${err.message}</span>`;
-    }
-  } finally {
-    if (btn) btn.disabled = false;
   }
-}
 </script>
 {% endblock %}
