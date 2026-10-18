@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}LinkPulse — Intelligent URL Management & Real-Time Analytics{% endblock %}</title>
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Core Design System -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+  {% block extra_css %}{% endblock %}
+
+  <!-- Core Icons, Chart.js and Toast Utilities in Head -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Safe Flashed Messages Ingestion via JSON -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <script id="flashed-messages-data" type="application/json">
+        {{ messages | tojson | safe }}
+      </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          try {
+            var raw = document.getElementById('flashed-messages-data');
+            if (raw) {
+              var messages = JSON.parse(raw.textContent);
+              if (Array.isArray(messages) && typeof showToast === 'function') {
+                messages.forEach(function(item) {
+                  var category = item[0] === 'error' ? 'error' : (item[0] === 'success' ? 'success' : 'info');
+                  showToast(item[1], category);
+                });
+              }
+            }
+          } catch (e) {
+            console.error('Error rendering flash messages:', e);
+          }
+        });
+      </script>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+  <!-- Core App Scripts -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

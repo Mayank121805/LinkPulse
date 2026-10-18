@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% block page_css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+  <!-- Persistent Midnight Navy Sidebar -->
+  <aside id="appSidebar" class="app-sidebar">
+    <div class="sidebar-header">
+      <a href="/dashboard" class="brand-logo">
+        <div class="brand-icon-wrap">
+          <i data-lucide="activity" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div class="brand-name">Link<span>Pulse</span></div>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <!-- Quick Action: Create Link -->
+      <div class="sidebar-cta">
+        <button class="btn btn-primary" style="width: 100%; box-shadow: 0 4px 12px rgba(37,99,235,0.3);" onclick="openModal('createLinkModal')">
+          <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> Create Link
+        </button>
+      </div>
+
+      <!-- Core Navigation -->
+      <div>
+        <div class="sidebar-section-title">Workspace</div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="/dashboard" class="sidebar-link {{ 'active' if active_nav == 'dashboard' else '' }}">
+              <i data-lucide="layout-dashboard" style="width: 18px; height: 18px;"></i>
+              <span>Overview</span>
+            </a>
+          </li>
+          <li>
+            <a href="/links" class="sidebar-link {{ 'active' if active_nav == 'links' else '' }}">
+              <i data-lucide="link-2" style="width: 18px; height: 18px;"></i>
+              <span>Links</span>
+            </a>
+          </li>
+          <li>
+            <a href="/campaigns" class="sidebar-link {{ 'active' if active_nav == 'campaigns' else '' }}">
+              <i data-lucide="folder-kanban" style="width: 18px; height: 18px;"></i>
+              <span>Campaigns</span>
+            </a>
+          </li>
+          <li>
+            <a href="/qr-codes" class="sidebar-link {{ 'active' if active_nav == 'qr-codes' else '' }}">
+              <i data-lucide="qr-code" style="width: 18px; height: 18px;"></i>
+              <span>QR Codes</span>
+            </a>
+          </li>
+          <li>
+            <a href="/import" class="sidebar-link {{ 'active' if active_nav == 'import' else '' }}">
+              <i data-lucide="upload-cloud" style="width: 18px; height: 18px;"></i>
+              <span>Bulk Import</span>
+            </a>
+          </li>
+          <li>
+            <a href="/settings" class="sidebar-link {{ 'active' if active_nav == 'settings' else '' }}">
+              <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Admin Governance (Server-Side Role Guarded) -->
+      {% if current_user and current_user.is_admin %}
+      <div>
+        <div class="sidebar-section-title">Governance</div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="/admin" class="sidebar-link {{ 'active' if active_nav == 'admin' else '' }}" style="color: #F87171;">
+              <i data-lucide="shield-alert" style="width: 18px; height: 18px; color: #EF4444;"></i>
+              <span>Admin Panel</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar Footer with User Profile & Logout -->
+    <div class="sidebar-footer">
+      <div class="user-profile-badge">
+        <div class="user-avatar">
+          {{ (current_user.username[0] if current_user else 'U')|upper }}
+        </div>
+        <div class="user-info">
+          <div class="user-name">{{ current_user.username if current_user else 'User' }}</div>
+          <div class="user-role-label">{{ current_user.role if current_user else 'Member' }}</div>
+        </div>
+      </div>
+      <a href="{{ url_for('auth.logout') }}" class="btn-icon" title="Log Out" style="color: #64748B;">
+        <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Canvas -->
+  <main class="app-main">
+    <!-- Topbar -->
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button id="mobileSidebarToggle" class="sidebar-mobile-toggle">
+          <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+        </button>
+
+        <div class="topbar-search">
+          <i data-lucide="search" class="topbar-search-icon" style="width: 16px; height: 16px;"></i>
+          <input 
+            type="text" 
+            id="globalSearchInput" 
+            class="form-control" 
+            placeholder="Search links, aliases, campaigns..."
+            onkeydown="if(event.key === 'Enter') { window.location.href='/links?search=' + encodeURIComponent(this.value); }"
+          >
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        {% block topbar_actions %}{% endblock %}
+
+        <button class="btn btn-primary btn-sm" onclick="openModal('createLinkModal')">
+          <i data-lucide="plus" style="width: 14px; height: 14px;"></i> New Link
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <div class="page-body">
+      {% block page_content %}{% endblock %}
+    </div>
+  </main>
+</div>
+
+<!-- ==================== 2-STEP CREATE LINK MODAL ==================== -->
+<div id="createLinkModal" class="modal-backdrop">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i data-lucide="sparkles" style="width: 18px; height: 18px; color: var(--primary);"></i>
+        <span>Create Short Link</span>
+      </div>
+      <button type="button" class="modal-close">&times;</button>
+    </div>
+
+    <!-- Step Progress Header -->
+    <div style="padding: 1.25rem 1.5rem 0;">
+      <div class="wizard-progress">
+        <div id="stepIndicator1" class="wizard-step active">
+          <div class="wizard-step-circle">1</div>
+          <div class="wizard-step-title">Destination & Details</div>
+        </div>
+        <div id="stepIndicator2" class="wizard-step">
+          <div class="wizard-step-circle">2</div>
+          <div class="wizard-step-title">Rules & Security</div>
+        </div>
+      </div>
+    </div>
+
+    <form id="createLinkForm">
+      <div class="modal-body" style="padding-top: 0.5rem;">
+        <!-- Step 1 Pane -->
+        <div id="wizardPane1" class="wizard-pane active">
+          <div class="form-group">
+            <label class="form-label" for="createDestUrl">Destination URL <span class="required">*</span></label>
+            <input 
+              type="url" 
+              id="createDestUrl" 
+              class="form-control" 
+              placeholder="https://example.com/very-long-promotional-page-url" 
+              required
+            >
+            <div class="form-hint">Must begin with http:// or https://. Blocked domains are strictly rejected.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="createCustomAlias">Custom Alias (Optional)</label>
+            <div class="input-group">
+              <span class="input-prefix">{{ base_url }}/r/</span>
+              <input 
+                type="text" 
+                id="createCustomAlias" 
+                class="form-control" 
+                placeholder="summer-launch"
+              >
+            </div>
+            <div class="form-hint">Leave blank to generate an automatic collision-resistant code.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="createTitle">Link Title (Optional)</label>
+            <input 
+              type="text" 
+              id="createTitle" 
+              class="form-control" 
+              placeholder="e.g. Q4 Marketing Landing Page"
+            >
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="createCampaign">Campaign (Optional)</label>
+              <select id="createCampaign" class="form-select">
+                <option value="">No Campaign</option>
+                {% if campaigns %}
+                  {% for c in campaigns %}
+                    <option value="{{ c.id }}">{{ c.name }}</option>
+                  {% endfor %}
+                {% endif %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="createTags">Tags (Comma-separated)</label>
+              <input 
+                type="text" 
+                id="createTags" 
+                class="form-control" 
+                placeholder="product, twitter, newsletter"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 Pane -->
+        <div id="wizardPane2" class="wizard-pane">
+          <div style="background-color: var(--bg-subtle); border-radius: var(--radius-md); padding: 0.875rem 1rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Link Summary</div>
+            <div id="reviewDestUrl" style="font-size: 0.875rem; font-weight: 500; color: var(--text-primary); margin-top: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
+            <div id="reviewAlias" style="font-family: monospace; font-size: 0.8125rem; color: var(--primary); margin-top: 0.125rem;"></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="createExpiresAt">Expiration Date & Time</label>
+              <input 
+                type="datetime-local" 
+                id="createExpiresAt" 
+                class="form-control"
+              >
+              <div class="form-hint">Redirects will be blocked once reached.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="createMaxClicks">Max Click Cap</label>
+              <input 
+                type="number" 
+                id="createMaxClicks" 
+                class="form-control" 
+                placeholder="e.g. 500" 
+                min="1"
+              >
+              <div class="form-hint">Redirects disabled when limit is hit.</div>
+            </div>
+          </div>
+
+          <!-- Password Protection Toggle -->
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem; margin-top: 0.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; cursor: pointer;">
+              <input type="checkbox" id="enablePasswordProtection" style="accent-color: var(--primary); width: 16px; height: 16px;">
+              <span>Require Password to Access Destination</span>
+            </label>
+
+            <div id="passwordInputGroup" style="display: none; margin-top: 0.75rem;">
+              <input 
+                type="password" 
+                id="createPassword" 
+                class="form-control" 
+                placeholder="Set secure link password"
+              >
+              <div class="form-hint">Visitors must supply this password to redirect. Destination is not leaked.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 / Confirmation Success Pane -->
+        <div id="wizardPaneSuccess" class="wizard-pane">
+          <div class="creation-success-box">
+            <div class="success-icon-wrap">
+              <i data-lucide="check" style="width: 28px; height: 28px;"></i>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">Link Created Successfully!</h3>
+            <p style="font-size: 0.875rem; color: var(--text-muted);">Your short link is active and ready to share.</p>
+
+            <div class="short-url-copy-card">
+              <span id="successShortUrl" class="short-url-text"></span>
+              <button type="button" id="successCopyBtn" class="btn btn-primary btn-sm">
+                <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy
+              </button>
+            </div>
+
+            <div style="margin-top: 1.25rem;">
+              <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">QR Code Asset:</div>
+              <img id="successQrImage" src="" alt="QR Code" style="width: 140px; height: 140px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); padding: 4px;">
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 0.75rem;">
+              <a id="successTestBtn" href="" target="_blank" class="btn btn-secondary btn-sm">
+                <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Test Live Link
+              </a>
+              <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('createLinkModal'); window.location.reload();">
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="wizardPrevBtn" class="btn btn-secondary" style="display: none;">
+          Back
+        </button>
+        <button type="button" id="wizardNextBtn" class="btn btn-primary">
+          Next: Rules & Security <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+        </button>
+        <button type="submit" id="wizardSubmitBtn" class="btn btn-primary" style="display: none;">
+          Publish Short Link
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== QR PREVIEW & DOWNLOAD MODAL ==================== -->
+<div id="qrPreviewModal" class="modal-backdrop">
+  <div class="modal-dialog" style="max-width: 420px; text-align: center;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i data-lucide="qr-code" style="width: 18px; height: 18px; color: var(--primary);"></i>
+        <span>Dynamic QR Code</span>
+      </div>
+      <button type="button" class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body" style="padding: 2rem 1.5rem;">
+      <img id="qrModalImage" src="" alt="QR Code" style="width: 180px; height: 180px; margin: 0 auto; display: block; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); padding: 8px;">
+      <div id="qrModalCode" style="font-family: monospace; font-size: 0.9375rem; font-weight: 600; color: var(--primary); margin-top: 1rem;"></div>
+      <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 0.25rem;">
+        Scan with any mobile device to test live redirection and click logging.
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content: center; gap: 0.75rem;">
+      <a id="qrModalDownloadBtn" href="" class="btn btn-primary btn-sm">
+        <i data-lucide="download" style="width: 14px; height: 14px;"></i> Download PNG
+      </a>
+      <a id="qrModalTestBtn" href="" target="_blank" class="btn btn-secondary btn-sm">
+        <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Test URL
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

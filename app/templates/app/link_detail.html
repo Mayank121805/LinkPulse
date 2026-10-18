@@ -1,0 +1,179 @@
+{% extends "app/layout.html" %}
+
+{% block topbar_actions %}
+<div class="date-filter-group">
+  <button type="button" class="date-pill single-date-pill" data-range="24h">24h</button>
+  <button type="button" class="date-pill single-date-pill" data-range="7d">7d</button>
+  <button type="button" class="date-pill single-date-pill active" data-range="30d">30d</button>
+  <button type="button" class="date-pill single-date-pill" data-range="all">All</button>
+</div>
+{% endblock %}
+
+{% block page_content %}
+<div id="linkDetailContainer" data-link-id="{{ link.id }}">
+  <!-- Back Link -->
+  <div style="margin-bottom: 1rem;">
+    <a href="/links" class="btn btn-outline btn-sm">
+      <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Back to All Links
+    </a>
+  </div>
+
+  <!-- Link Header Card -->
+  <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.35rem;">
+          <h1 style="font-size: 1.5rem; font-weight: 700;">{{ link.title }}</h1>
+          <span class="badge badge-{{ link.status }}">
+            <span class="badge-dot"></span>
+            {{ link.status.replace('_', ' ') }}
+          </span>
+          {% if link.is_password_protected %}
+            <span class="badge badge-disabled"><i data-lucide="lock" style="width: 12px; height: 12px;"></i> Protected</span>
+          {% endif %}
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+          <span style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--primary);">
+            {{ base_url }}/r/{{ link.effective_code }}
+          </span>
+          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('{{ base_url }}/r/{{ link.effective_code }}')">
+            <i data-lucide="copy" style="width: 13px; height: 13px;"></i> Copy
+          </button>
+          <a href="{{ base_url }}/r/{{ link.effective_code }}" target="_blank" class="btn btn-secondary btn-sm">
+            <i data-lucide="external-link" style="width: 13px; height: 13px;"></i> Test
+          </a>
+        </div>
+
+        <div style="font-size: 0.875rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+          <span>Target:</span>
+          <a href="{{ link.destination_url }}" target="_blank" style="color: var(--text-secondary); text-decoration: underline; max-width: 450px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            {{ link.destination_url }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 0.5rem;">
+        <a href="/api/v1/links/{{ link.id }}/qr?download=true" class="btn btn-secondary btn-sm">
+          <i data-lucide="download" style="width: 14px; height: 14px;"></i> Download QR
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Grid for this Link -->
+  <div class="kpi-grid" style="margin-bottom: 1.5rem;">
+    <div class="kpi-card">
+      <div>
+        <div class="kpi-label">Filtered Period Clicks</div>
+        <div id="singleTotalClicks" class="kpi-value">—</div>
+        <div class="kpi-trend positive">Real database records</div>
+      </div>
+      <div class="kpi-icon-wrap kpi-icon-blue">
+        <i data-lucide="mouse-pointer-click" style="width: 22px; height: 22px;"></i>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div>
+        <div class="kpi-label">Unique Visitors</div>
+        <div id="singleUniqueVisitors" class="kpi-value">—</div>
+        <div class="kpi-trend neutral">Distinct visitor hashes</div>
+      </div>
+      <div class="kpi-icon-wrap kpi-icon-cyan">
+        <i data-lucide="users" style="width: 22px; height: 22px;"></i>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div>
+        <div class="kpi-label">Lifetime Clicks</div>
+        <div id="singleLifetimeClicks" class="kpi-value">—</div>
+        <div class="kpi-trend neutral">
+          {% if link.max_clicks %}Cap: {{ link.max_clicks }}{% else %}No cap{% endif %}
+        </div>
+      </div>
+      <div class="kpi-icon-wrap kpi-icon-green">
+        <i data-lucide="activity" style="width: 22px; height: 22px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="charts-grid-2" style="margin-bottom: 1.5rem;">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Click Timeline</div>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="singleTrendCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Devices & Platforms</div>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="singleDeviceCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Browsers & Referrers -->
+  <div class="charts-grid-2" style="margin-bottom: 1.5rem;">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Browser Breakdown</div>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="height: 220px;">
+          <canvas id="singleBrowserCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Traffic Sources</div>
+      </div>
+      <div class="card-body" style="height: 220px; overflow-y: auto;">
+        <div id="singleReferrersList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3: Recent Click Stream Log -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Recent Inbound Click Events</div>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Location</th>
+            <th>Device</th>
+            <th>Browser / OS</th>
+            <th>Referrer Domain</th>
+            <th>Classification</th>
+          </tr>
+        </thead>
+        <tbody id="singleClicksTableBody">
+          <tr><td colspan="6" style="text-align: center; padding: 2rem;"><div class="skeleton" style="height: 20px; width: 140px; margin: 0 auto;"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

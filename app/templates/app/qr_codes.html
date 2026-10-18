@@ -1,0 +1,95 @@
+{% extends "app/layout.html" %}
+
+{% block page_content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dynamic QR Studio</h1>
+    <div class="page-desc">Generate, preview, and export high-resolution QR assets for any active short URL.</div>
+  </div>
+</div>
+
+<div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;">
+    <div style="flex: 1; min-width: 280px;">
+      <label class="form-label" for="qrLinkSelector">Select Link to Generate QR Asset</label>
+      <select id="qrLinkSelector" class="form-select" onchange="updateQrStudioPreview(this.value)">
+        {% if links %}
+          {% for l in links %}
+            <option value="{{ l.id }}" data-short="{{ base_url }}/r/{{ l.effective_code }}" data-dest="{{ l.destination_url }}">
+              {{ l.title }} ({{ base_url }}/r/{{ l.effective_code }})
+            </option>
+          {% endfor %}
+        {% else %}
+          <option value="">No links created yet</option>
+        {% endif %}
+      </select>
+      <div class="form-hint" style="margin-top: 0.5rem;">
+        QR codes are dynamically linked to your short URL. Any future changes to the destination will automatically update for anyone scanning this QR code!
+      </div>
+    </div>
+
+    <!-- Live QR Display Box -->
+    <div style="text-align: center; background-color: var(--bg-subtle); padding: 1.5rem; border-radius: var(--radius-xl); border: 1px solid var(--border-subtle);">
+      <img id="qrStudioImage" src="{{ '/api/v1/links/' ~ links[0].id ~ '/qr' if links else '' }}" alt="QR Code" style="width: 180px; height: 180px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); padding: 8px; background: #FFFFFF; display: block; margin: 0 auto;">
+      <div id="qrStudioShortUrl" style="font-family: monospace; font-size: 0.875rem; font-weight: 600; color: var(--primary); margin-top: 0.75rem;">
+        {{ base_url ~ '/r/' ~ links[0].effective_code if links else '—' }}
+      </div>
+      <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
+        <a id="qrStudioDownloadBtn" href="{{ '/api/v1/links/' ~ links[0].id ~ '/qr?download=true' if links else '#' }}" class="btn btn-primary btn-sm">
+          <i data-lucide="download" style="width: 14px; height: 14px;"></i> Download PNG
+        </a>
+        <a id="qrStudioTestBtn" href="{{ base_url ~ '/r/' ~ links[0].effective_code if links else '#' }}" target="_blank" class="btn btn-secondary btn-sm">
+          <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Test Scan
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- All Links QR Grid -->
+<div class="page-header" style="margin-top: 1rem;">
+  <div>
+    <h3 style="font-size: 1.25rem; font-weight: 700;">Workspace QR Library</h3>
+    <div class="page-desc">All generated QR codes across your links.</div>
+  </div>
+</div>
+
+{% if links %}
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem;">
+  {% for l in links %}
+  <div class="card" style="text-align: center; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <img src="/api/v1/links/{{ l.id }}/qr" alt="QR for {{ l.title }}" style="width: 130px; height: 130px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); padding: 6px; margin: 0 auto 1rem; display: block;">
+      <div style="font-weight: 600; font-size: 0.9375rem; color: var(--text-primary); margin-bottom: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        {{ l.title }}
+      </div>
+      <div style="font-family: monospace; font-size: 0.75rem; color: var(--primary);">
+        /{{ l.effective_code }}
+      </div>
+    </div>
+    <div style="margin-top: 1.25rem;">
+      <a href="/api/v1/links/{{ l.id }}/qr?download=true" class="btn btn-secondary btn-sm" style="width: 100%;">
+        <i data-lucide="download" style="width: 13px; height: 13px;"></i> Download
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function updateQrStudioPreview(linkId) {
+    if (!linkId) return;
+    const select = document.getElementById('qrLinkSelector');
+    const option = select.options[select.selectedIndex];
+    const shortUrl = option.getAttribute('data-short');
+
+    document.getElementById('qrStudioImage').src = `/api/v1/links/${linkId}/qr`;
+    document.getElementById('qrStudioShortUrl').textContent = shortUrl;
+    document.getElementById('qrStudioDownloadBtn').href = `/api/v1/links/${linkId}/qr?download=true`;
+    document.getElementById('qrStudioTestBtn').href = shortUrl;
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--bg-main); padding: 1.5rem;">
+  <div style="background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 3rem 2rem; max-width: 480px; width: 100%; text-align: center; box-shadow: var(--shadow-modal);">
+    <div style="width: 64px; height: 64px; border-radius: 50%; background-color: var(--status-limit-bg); color: var(--status-limit-text); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+      <i data-lucide="stop-circle" style="width: 32px; height: 32px;"></i>
+    </div>
+    <div style="font-size: 0.8125rem; font-weight: 700; color: #DC2626; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+      429 Limit Reached
+    </div>
+    <h2 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 0.75rem;">Click Cap Exhausted</h2>
+    <p style="color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.6; margin-bottom: 2rem;">
+      This short URL was configured with a maximum click quota which has now been fully reached. No further redirects are permitted.
+    </p>
+    <a href="/" class="btn btn-secondary" style="width: 100%;">
+      Go to Homepage
+    </a>
+  </div>
+</div>
+{% endblock %}

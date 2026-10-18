@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+  .auth-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-main);
+  }
+  .auth-brand-side {
+    flex: 1;
+    background: radial-gradient(circle at 0% 0%, #1E3A8A 0%, #0A0F1D 80%);
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-form-side {
+    width: 520px;
+    background-color: var(--bg-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    box-shadow: var(--shadow-modal);
+  }
+  @media (max-width: 900px) {
+    .auth-brand-side { display: none; }
+    .auth-form-side { width: 100%; padding: 2rem; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <!-- Brand Showcase Side -->
+  <div class="auth-brand-side">
+    <a href="/" class="brand-logo" style="display: inline-flex;">
+      <div class="brand-icon-wrap">
+        <i data-lucide="activity" style="width: 20px; height: 20px;"></i>
+      </div>
+      <div class="brand-name">Link<span>Pulse</span></div>
+    </a>
+
+    <div style="max-width: 440px;">
+      <div style="font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; color: var(--sidebar-accent); letter-spacing: 0.08em; margin-bottom: 0.5rem;">
+        Intelligent URL Infrastructure
+      </div>
+      <h2 style="color: #FFFFFF; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 1.25rem;">
+        Complete Link Governance & Real-Time Analytics
+      </h2>
+      <p style="color: #94A3B8; font-size: 0.9375rem; line-height: 1.6;">
+        Manage marketing campaigns, generate downloadable QR codes, enforce click limits, and analyze audience attribution in real-time.
+      </p>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--sidebar-border); padding-top: 1.5rem; font-size: 0.8125rem; color: #64748B;">
+      <span>© 2026 LinkPulse Platform</span>
+      <span>Engineered for Hackathon Round 2</span>
+    </div>
+  </div>
+
+  <!-- Form Side -->
+  <div class="auth-form-side">
+    <div style="width: 100%; max-width: 380px;">
+      <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 0.35rem;">Sign In</h2>
+        <p style="font-size: 0.875rem; color: var(--text-muted);">
+          Welcome back to your LinkPulse console.
+        </p>
+      </div>
+
+      <!-- Quick Demo Credentials for Judges -->
+      <div style="background-color: var(--primary-subtle); border: 1px solid rgba(37,99,235,0.2); border-radius: var(--radius-lg); padding: 0.875rem; margin-bottom: 1.5rem;">
+        <div style="font-size: 0.75rem; font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">
+          ⚡ 1-Click Judge Credentials:
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-secondary btn-sm" style="flex: 1; font-size: 0.75rem;" onclick="fillCredentials('demo@linkpulse.io', 'demo123')">
+            Demo User
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" style="flex: 1; font-size: 0.75rem;" onclick="fillCredentials('admin@linkpulse.io', 'admin123')">
+            Admin User
+          </button>
+        </div>
+      </div>
+
+      <form action="{{ url_for('auth.login', next=next) }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-group">
+          <label class="form-label" for="identifierInput">Email or Username <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="identifierInput" 
+            name="identifier" 
+            class="form-control" 
+            placeholder="you@domain.com or username" 
+            value="{{ identifier or '' }}" 
+            required 
+            autofocus
+          >
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.375rem;">
+            <label class="form-label" for="passwordInput" style="margin-bottom: 0;">Password <span class="required">*</span></label>
+            <button type="button" id="togglePasswordBtn" style="background: none; border: none; font-size: 0.75rem; color: var(--primary); cursor: pointer;">
+              Show
+            </button>
+          </div>
+          <input 
+            type="password" 
+            id="passwordInput" 
+            name="password" 
+            class="form-control" 
+            placeholder="••••••••" 
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem;">
+          Sign In to Dashboard
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+        Don't have an account yet? 
+        <a href="{{ url_for('auth.register') }}" style="font-weight: 600;">Create one now</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function fillCredentials(user, pass) {
+    document.getElementById('identifierInput').value = user;
+    const pw = document.getElementById('passwordInput');
+    pw.value = pass;
+    showToast('Credentials populated! Click "Sign In" to proceed.', 'info');
+  }
+
+  const toggleBtn = document.getElementById('togglePasswordBtn');
+  const pwInput = document.getElementById('passwordInput');
+  if (toggleBtn && pwInput) {
+    toggleBtn.addEventListener('click', () => {
+      const isPw = pwInput.type === 'password';
+      pwInput.type = isPw ? 'text' : 'password';
+      toggleBtn.textContent = isPw ? 'Hide' : 'Show';
+    });
+  }
+</script>
+{% endblock %}

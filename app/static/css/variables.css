@@ -1,0 +1,81 @@
+:root {
+  /* ================== COLOR SYSTEM ================== */
+  /* Sidebar (Dark Navy & Midnight) */
+  --sidebar-bg: #0A0F1D;
+  --sidebar-surface: #111827;
+  --sidebar-border: #1E293B;
+  --sidebar-text: #94A3B8;
+  --sidebar-text-hover: #F8FAFC;
+  --sidebar-text-active: #FFFFFF;
+  --sidebar-active-bg: #1E293B;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
+  --sidebar-accent: #38BDF8;
+
+  /* Main Workspace (Sophisticated Light) */
+  --bg-main: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F1F5F9;
+  --border-subtle: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --border-focus: #3B82F6;
+
+  /* Brand Accents */
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-subtle: #EFF6FF;
+  --primary-glow: rgba(37, 99, 235, 0.15);
+  --cyan: #06B6D4;
+  --cyan-subtle: #ECFEFF;
+  --brand-gradient: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
+  --brand-gradient-hover: linear-gradient(135deg, #1D4ED8 0%, #0891B2 100%);
+
+  /* Text & Typography */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --text-light: #F8FAFC;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+  /* Functional Status Colors */
+  --status-active-bg: #ECFDF5;
+  --status-active-text: #059669;
+  --status-active-border: #A7F3D0;
+
+  --status-expired-bg: #FEF3C7;
+  --status-expired-text: #D97706;
+  --status-expired-border: #FDE68A;
+
+  --status-disabled-bg: #F1F5F9;
+  --status-disabled-text: #64748B;
+  --status-disabled-border: #CBD5E1;
+
+  --status-limit-bg: #FEF2F2;
+  --status-limit-text: #DC2626;
+  --status-limit-border: #FECACA;
+
+  /* Elevation & Shadows */
+  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-elevated: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-modal: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.25);
+
+  /* Corner Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-full: 9999px;
+
+  /* Spacing & Layout */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 72px;
+  --topbar-height: 68px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}

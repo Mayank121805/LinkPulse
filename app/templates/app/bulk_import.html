@@ -1,0 +1,132 @@
+{% extends "app/layout.html" %}
+
+{% block page_content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Bulk CSV Import</h1>
+    <div class="page-desc">Upload hundreds of links at once with automated row-level validation and collision checks.</div>
+  </div>
+  <div>
+    <a href="/api/v1/sample-csv" class="btn btn-secondary">
+      <i data-lucide="download" style="width: 14px; height: 14px;"></i> Download Sample CSV
+    </a>
+  </div>
+</div>
+
+<!-- Upload Card -->
+<div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+  <form id="csvUploadForm">
+    <div id="csvDropzone" style="border: 2px dashed var(--border-subtle); border-radius: var(--radius-xl); padding: 3rem 1.5rem; text-align: center; cursor: pointer; transition: all var(--transition-fast);">
+      <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+      <div style="width: 54px; height: 54px; border-radius: 50%; background-color: var(--primary-subtle); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+        <i data-lucide="upload-cloud" style="width: 26px; height: 26px;"></i>
+      </div>
+      <h3 style="font-size: 1.15rem; font-weight: 600; margin-bottom: 0.25rem;">
+        Click to browse or drag and drop your CSV file here
+      </h3>
+      <p style="font-size: 0.8125rem; color: var(--text-muted); max-width: 420px; margin: 0 auto;">
+        Supported file format: .csv (max 5MB). Required header: <code>destination_url</code>. Optional: <code>custom_alias</code>, <code>title</code>, <code>campaign</code>, <code>tags</code>, <code>max_clicks</code>, <code>expires_at</code>.
+      </p>
+
+      <!-- Selected File Feedback -->
+      <div id="selectedFileInfo" style="display: none; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1.25rem; color: var(--primary); font-weight: 600; font-size: 0.875rem;">
+        <i data-lucide="file-check" style="width: 18px; height: 18px;"></i>
+        <span id="selectedFileName"></span>
+      </div>
+    </div>
+
+    <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+      <button type="submit" id="importSubmitBtn" class="btn btn-primary" disabled>
+        <i data-lucide="upload" style="width: 15px; height: 15px;"></i> Upload & Process Links
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Dynamic Results Summary Container -->
+<div id="importResultsContainer" style="display: none;">
+  <!-- Results Metrics -->
+  <div class="kpi-grid" style="margin-bottom: 1.5rem;">
+    <div class="kpi-card">
+      <div>
+        <div class="kpi-label">Total Rows Processed</div>
+        <div id="importTotalCount" class="kpi-value">0</div>
+        <div class="kpi-trend neutral">Scanned from CSV</div>
+      </div>
+      <div class="kpi-icon-wrap kpi-icon-blue">
+        <i data-lucide="file-text" style="width: 22px; height: 22px;"></i>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div>
+        <div class="kpi-label">Valid Links Imported</div>
+        <div id="importValidCount" class="kpi-value" style="color: #059669;">0</div>
+        <div class="kpi-trend positive">Committed to database</div>
+      </div>
+      <div class="kpi-icon-wrap kpi-icon-green">
+        <i data-lucide="check-circle" style="width: 22px; height: 22px;"></i>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div>
+        <div class="kpi-label">Rejected / Invalid Rows</div>
+        <div id="importErrorCount" class="kpi-value" style="color: #DC2626;">0</div>
+        <div class="kpi-trend neutral">Surfaced for correction</div>
+      </div>
+      <div class="kpi-icon-wrap kpi-icon-amber">
+        <i data-lucide="alert-triangle" style="width: 22px; height: 22px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Errors Breakdown Card -->
+  <div id="importErrorsCard" class="card" style="margin-bottom: 1.5rem; display: none; border-color: #FECACA;">
+    <div class="card-header" style="background-color: #FEF2F2;">
+      <div class="card-title" style="color: #991B1B;">
+        <i data-lucide="alert-circle" style="width: 16px; height: 16px; color: #DC2626; vertical-align: middle;"></i>
+        Validation Errors & Warnings
+      </div>
+      <span class="badge badge-limit">Rejected Rows</span>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Row #</th>
+            <th>Submitted URL</th>
+            <th>Rejection Reason</th>
+          </tr>
+        </thead>
+        <tbody id="importErrorsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Successfully Imported Card -->
+  <div id="importValidCard" class="card" style="display: none;">
+    <div class="card-header">
+      <div class="card-title">Successfully Imported Links</div>
+      <a href="/links" class="btn btn-primary btn-sm">View In Links Table</a>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Row #</th>
+            <th>Title</th>
+            <th>Short Code</th>
+            <th>Campaign</th>
+          </tr>
+        </thead>
+        <tbody id="importValidTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/csv_import.js') }}"></script>
+{% endblock %}

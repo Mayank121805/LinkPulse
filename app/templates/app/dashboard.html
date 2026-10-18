@@ -1,0 +1,217 @@
+{% extends "app/layout.html" %}
+
+{% block topbar_actions %}
+<div class="date-filter-group">
+  <button type="button" class="date-pill" data-range="24h">24h</button>
+  <button type="button" class="date-pill active" data-range="7d">7d</button>
+  <button type="button" class="date-pill" data-range="30d">30d</button>
+  <button type="button" class="date-pill" data-range="all">All</button>
+</div>
+
+<select id="dashboardCampaignFilter" class="form-select" style="width: 170px; font-size: 0.8125rem; height: 36px; padding: 0.25rem 0.5rem;">
+  <option value="">All Campaigns</option>
+  {% for c in campaigns %}
+    <option value="{{ c.id }}">{{ c.name }}</option>
+  {% endfor %}
+</select>
+{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Analytics Overview</h1>
+    <div class="page-desc">Real-time performance metrics and traffic attribution across your links.</div>
+  </div>
+</div>
+
+<!-- Expiring Links Alerts Banner -->
+<div id="expiringAlertsContainer" style="display: none;"></div>
+
+<!-- KPI Cards Grid -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div>
+      <div class="kpi-label">Total Clicks</div>
+      <div id="kpiTotalClicks" class="kpi-value">—</div>
+      <div class="kpi-trend positive">
+        <i data-lucide="trending-up" style="width: 14px; height: 14px;"></i>
+        <span>Live MySQL events</span>
+      </div>
+    </div>
+    <div class="kpi-icon-wrap kpi-icon-blue">
+      <i data-lucide="mouse-pointer-click" style="width: 22px; height: 22px;"></i>
+    </div>
+  </div>
+
+  <div class="kpi-card">
+    <div>
+      <div class="kpi-label">Unique Visitors</div>
+      <div id="kpiUniqueVisitors" class="kpi-value">—</div>
+      <div class="kpi-trend neutral">
+        <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+        <span>Zero-PII hash estimation</span>
+      </div>
+    </div>
+    <div class="kpi-icon-wrap kpi-icon-cyan">
+      <i data-lucide="users" style="width: 22px; height: 22px;"></i>
+    </div>
+  </div>
+
+  <div class="kpi-card">
+    <div>
+      <div class="kpi-label">Active Links</div>
+      <div id="kpiActiveLinks" class="kpi-value">—</div>
+      <div class="kpi-trend positive">
+        <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i>
+        <span>Healthy & redirecting</span>
+      </div>
+    </div>
+    <div class="kpi-icon-wrap kpi-icon-green">
+      <i data-lucide="link" style="width: 22px; height: 22px;"></i>
+    </div>
+  </div>
+
+  <div class="kpi-card">
+    <div>
+      <div class="kpi-label">Expired / Disabled</div>
+      <div id="kpiDisabledLinks" class="kpi-value">—</div>
+      <div class="kpi-trend neutral">
+        <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+        <span>Retains analytics</span>
+      </div>
+    </div>
+    <div class="kpi-icon-wrap kpi-icon-amber">
+      <i data-lucide="pause-circle" style="width: 22px; height: 22px;"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row 1: Timeline Trend & Devices -->
+<div class="charts-grid-2">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Clicks Over Time</div>
+        <div class="card-subtitle">Continuous visitor volume over requested timeframe</div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">
+        <i data-lucide="zap" style="width: 12px; height: 12px;"></i> Real-Time Feed
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="chart-container">
+        <canvas id="clicksTrendCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Device Breakdown</div>
+        <div class="card-subtitle">User-agent classification</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="chart-container">
+        <canvas id="deviceChartCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row 2: Browsers, Traffic Sources, Campaigns -->
+<div class="charts-grid-3">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Top Browsers</div>
+        <div class="card-subtitle">Browser engine family</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="chart-container" style="height: 240px;">
+        <canvas id="browserChartCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Traffic Sources</div>
+        <div class="card-subtitle">Top referrer domains</div>
+      </div>
+    </div>
+    <div class="card-body" style="height: 240px; overflow-y: auto;">
+      <div id="referrersList"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Campaign Performance</div>
+        <div class="card-subtitle">Clicks by marketing group</div>
+      </div>
+    </div>
+    <div class="card-body" style="height: 240px; overflow-y: auto;">
+      <div id="campaignPerformanceList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 3: Top Performing Links & Recent Activity -->
+<div class="charts-grid-2">
+  <!-- Top Links Table -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Top Performing Links</div>
+        <div class="card-subtitle">Highest click volume links in your workspace</div>
+      </div>
+      <a href="/links" class="btn btn-outline btn-sm">View All Links</a>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Link Details</th>
+            <th>Status</th>
+            <th>Clicks</th>
+            <th>Campaign</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="topLinksTableBody">
+          <tr><td colspan="5" style="text-align: center; padding: 2rem;"><div class="skeleton" style="height: 20px; width: 150px; margin: 0 auto;"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Live Activity Stream -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Recent Activity</div>
+        <div class="card-subtitle">Latest inbound short link clicks</div>
+      </div>
+      <span class="badge badge-active">
+        <span class="badge-dot"></span> Live
+      </span>
+    </div>
+    <div class="card-body" style="max-height: 380px; overflow-y: auto;">
+      <div id="recentActivityFeed">
+        <div class="skeleton" style="height: 24px; margin-bottom: 0.5rem;"></div>
+        <div class="skeleton" style="height: 24px; margin-bottom: 0.5rem;"></div>
+        <div class="skeleton" style="height: 24px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

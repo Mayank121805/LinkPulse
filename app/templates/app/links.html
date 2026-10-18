@@ -1,0 +1,92 @@
+{% extends "app/layout.html" %}
+
+{% block page_content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Link Management</h1>
+    <div class="page-desc">Create, search, filter, and control redirect rules for your short URLs.</div>
+  </div>
+  <div>
+    <button class="btn btn-primary" onclick="openModal('createLinkModal')">
+      <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Create New Link
+    </button>
+  </div>
+</div>
+
+<!-- Filters Bar Card -->
+<div class="card" style="padding: 1.25rem;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+    <!-- Search Bar -->
+    <div style="flex: 1; min-width: 260px;">
+      <div class="input-group">
+        <span class="input-prefix"><i data-lucide="search" style="width: 14px; height: 14px;"></i></span>
+        <input 
+          type="text" 
+          id="linkSearchInput" 
+          class="form-control" 
+          placeholder="Search by title, destination URL, or alias..."
+        >
+      </div>
+    </div>
+
+    <!-- Filter Dropdowns -->
+    <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+      <!-- Status Filter -->
+      <select id="linkStatusFilter" class="form-select" style="width: 150px; font-size: 0.8125rem;">
+        <option value="all">All Statuses</option>
+        <option value="active">Active Only</option>
+        <option value="expired">Expired</option>
+        <option value="disabled">Disabled</option>
+        <option value="limit_reached">Limit Reached</option>
+      </select>
+
+      <!-- Campaign Filter -->
+      <select id="linkCampaignFilter" class="form-select" style="width: 170px; font-size: 0.8125rem;">
+        <option value="">All Campaigns</option>
+        {% for c in campaigns %}
+          <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Sort Dropdown -->
+      <select id="linkSortSelect" class="form-select" style="width: 150px; font-size: 0.8125rem;">
+        <option value="created_desc">Newest First</option>
+        <option value="created_asc">Oldest First</option>
+        <option value="clicks_desc">Most Clicks</option>
+        <option value="clicks_asc">Fewest Clicks</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Links Table Card -->
+<div class="card">
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Link Details</th>
+          <th>Status</th>
+          <th>Clicks</th>
+          <th>Campaign & Tags</th>
+          <th>Created / Expiry</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="linksTableBody">
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 3rem;">
+            <div class="skeleton" style="height: 20px; width: 200px; margin: 0 auto;"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer" id="linksPagination"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/links.js') }}"></script>
+{% endblock %}

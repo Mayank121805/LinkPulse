@@ -1,0 +1,196 @@
+{% extends "app/layout.html" %}
+
+{% block page_content %}
+<div class="page-header">
+  <div>
+    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+      <span class="badge badge-limit" style="font-size: 0.75rem;">ADMIN CONSOLE</span>
+      <h1 class="page-title" style="margin: 0;">Platform Governance & Safety</h1>
+    </div>
+    <div class="page-desc">Comprehensive administrative control over platform links, user accounts, and security blocklists.</div>
+  </div>
+</div>
+
+<!-- Admin KPI Grid -->
+<div class="kpi-grid" style="margin-bottom: 2rem;">
+  <div class="kpi-card">
+    <div>
+      <div class="kpi-label">Total Users</div>
+      <div id="adminTotalUsers" class="kpi-value">—</div>
+      <div class="kpi-trend positive">Registered accounts</div>
+    </div>
+    <div class="kpi-icon-wrap kpi-icon-blue">
+      <i data-lucide="users" style="width: 22px; height: 22px;"></i>
+    </div>
+  </div>
+
+  <div class="kpi-card">
+    <div>
+      <div class="kpi-label">Platform Links</div>
+      <div id="adminTotalLinks" class="kpi-value">—</div>
+      <div class="kpi-trend positive">Across all tenants</div>
+    </div>
+    <div class="kpi-icon-wrap kpi-icon-cyan">
+      <i data-lucide="link" style="width: 22px; height: 22px;"></i>
+    </div>
+  </div>
+
+  <div class="kpi-card">
+    <div>
+      <div class="kpi-label">Lifetime Clicks</div>
+      <div id="adminTotalClicks" class="kpi-value">—</div>
+      <div class="kpi-trend positive">Total visits handled</div>
+    </div>
+    <div class="kpi-icon-wrap kpi-icon-green">
+      <i data-lucide="activity" style="width: 22px; height: 22px;"></i>
+    </div>
+  </div>
+
+  <div class="kpi-card">
+    <div>
+      <div class="kpi-label">Blocked Domains</div>
+      <div id="adminBlockedDomains" class="kpi-value" style="color: #DC2626;">—</div>
+      <div class="kpi-trend neutral">Abuse & phishing filter</div>
+    </div>
+    <div class="kpi-icon-wrap kpi-icon-amber">
+      <i data-lucide="shield-alert" style="width: 22px; height: 22px;"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Section 1: User Management -->
+<div class="card" style="margin-bottom: 2rem;">
+  <div class="card-header">
+    <div>
+      <div class="card-title">User Account Directory</div>
+      <div class="card-subtitle">Manage platform permissions and account access</div>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Account Status</th>
+          <th>Links</th>
+          <th>Clicks</th>
+          <th style="text-align: right;">Access Controls</th>
+        </tr>
+      </thead>
+      <tbody id="adminUsersTableBody">
+        <tr><td colspan="6" style="text-align: center; padding: 2rem;"><div class="skeleton" style="height: 20px; width: 140px; margin: 0 auto;"></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Section 2: Global Link Moderation & Takedown -->
+<div class="card" style="margin-bottom: 2rem;">
+  <div class="card-header">
+    <div>
+      <div class="card-title">Platform-Wide Link Moderation</div>
+      <div class="card-subtitle">Immediate takedown controls for suspicious or abusive destinations</div>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Link Details</th>
+          <th>Owner</th>
+          <th>Status</th>
+          <th>Clicks</th>
+          <th style="text-align: right;">Moderation Action</th>
+        </tr>
+      </thead>
+      <tbody id="adminLinksTableBody">
+        <tr><td colspan="5" style="text-align: center; padding: 2rem;"><div class="skeleton" style="height: 20px; width: 140px; margin: 0 auto;"></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Section 3 & 4: Blocked Domains & Audit Logs -->
+<div class="charts-grid-2">
+  <!-- Blocked Domains -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Domain Blocklist</div>
+        <div class="card-subtitle">Destinations rejected system-wide</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="openModal('addBlockedDomainModal')">
+        <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Block Domain
+      </button>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Domain</th>
+            <th>Reason</th>
+            <th>Creator</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="blockedDomainsTableBody">
+          <tr><td colspan="4" style="text-align: center; padding: 2rem;"><div class="skeleton" style="height: 20px; width: 140px; margin: 0 auto;"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Security Audit Logs -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Administrative Audit Log</div>
+        <div class="card-subtitle">Chronological record of moderator actions</div>
+      </div>
+      <span class="badge badge-active">Protected</span>
+    </div>
+    <div class="card-body" style="max-height: 340px; overflow-y: auto;">
+      <div id="adminLogsFeed">
+        <div class="skeleton" style="height: 24px; margin-bottom: 0.5rem;"></div>
+        <div class="skeleton" style="height: 24px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Blocked Domain Modal -->
+<div id="addBlockedDomainModal" class="modal-backdrop">
+  <div class="modal-dialog" style="max-width: 480px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i data-lucide="shield-alert" style="width: 18px; height: 18px; color: #DC2626;"></i>
+        <span>Block Abusive Domain</span>
+      </div>
+      <button type="button" class="modal-close">&times;</button>
+    </div>
+    <form id="addBlockedDomainForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="blockDomainInput">Domain to Block <span class="required">*</span></label>
+          <input type="text" id="blockDomainInput" class="form-control" placeholder="e.g. malicious-phishing-portal.com" required>
+          <div class="form-hint">Any links targeting this domain will be rejected and existing links disabled immediately.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="blockReasonInput">Rejection Reason</label>
+          <input type="text" id="blockReasonInput" class="form-control" placeholder="e.g. Credential harvesting phishing" value="Malicious or abusive destination">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('addBlockedDomainModal')">Cancel</button>
+        <button type="submit" class="btn btn-danger">Enforce Domain Block</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
